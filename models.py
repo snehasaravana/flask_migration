@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
  
 db = SQLAlchemy()
- 
+#  User model 
 class User(db.Model):
     __tablename__ = 'userList'
  

@@ -7,6 +7,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
  
+#  POST request-add new user
 @app.route('/users',methods=['POST','GET'])
 def users():
 
@@ -26,7 +27,7 @@ def users():
         else:
              return {"error":"Check data format"},403
         
-
+# GET request-fetch all the users
     elif request.method=='GET':
         users=User.query.all()
         results=[{
@@ -38,9 +39,11 @@ def users():
             "dob":user.dob
         } for user in users]
     return {"count":len(results),"users":results},200
+
 @app.route('/users/<user_id>',methods=['GET','PUT',"DELETE"])
 def list(user_id):
     user=User.query.get_or_404(user_id)
+# GET- fetch individual user data
     if request.method=='GET':
         response={
             "name":user.name,
@@ -51,6 +54,7 @@ def list(user_id):
             "dob":user.dob
         }
         return {"message":'SUCCESS',"user":response},200
+# PUT-update the data of individual user
     elif request.method=='PUT':
         data=request.get_json()
         user.name=data['name']
@@ -62,10 +66,11 @@ def list(user_id):
         db.session.add(user)
         db.session.commit()
         return {"message": f" user {user.name} successfully updated"},200
-
+# DELETE-remove the user data
     elif request.method=='DELETE':
         db.session.delete(user)
         db.session.commit()
         return{"message": f"user {user.name} deleted successfully."},200
+        
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
